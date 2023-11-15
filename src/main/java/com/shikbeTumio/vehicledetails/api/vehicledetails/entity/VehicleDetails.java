@@ -1,6 +1,8 @@
 package com.shikbeTumio.vehicledetails.api.vehicledetails.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,10 @@ public class VehicleDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int modelYear;
+    @NotBlank(message = "* Manufacturer name is required")
     private String brandName;
+    @NotBlank(message = "* Model name is required")
+    @Size(min = 3, max = 15, message = "* Model name should be between 3-15 characters")
     private String modelName;
     private String trimType;
     private String bodyType;
