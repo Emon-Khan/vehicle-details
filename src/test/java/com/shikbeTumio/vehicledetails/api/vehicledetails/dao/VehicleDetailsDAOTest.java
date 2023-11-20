@@ -38,7 +38,7 @@ public class VehicleDetailsDAOTest {
 
         //Assert
         Assertions.assertThat(savedVehicleDetails).isNotNull();
-        //Assertions.assertThat(savedVehicleDetails.getId()).isGreaterThan(0);
+        Assertions.assertThat(savedVehicleDetails.getId()).isGreaterThan(0);
     }
 
 }
