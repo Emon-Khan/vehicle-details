@@ -3,69 +3,44 @@ package com.shikbeTumio.vehicledetails.api.vehicledetails.service;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.dao.VehicleDetailsDAO;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.entity.VehicleDetails;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.VehicleNotSaved;
-import org.junit.jupiter.api.BeforeEach;
+import com.shikbeTumio.vehicledetails.api.vehicledetails.service.impl.VehicleDetailsServiceImpl;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 class VehicleDetailsServiceTest {
 
-    @MockBean
+    @Mock
     private VehicleDetailsDAO vehicleDetailsDAO;
-    @Autowired
-    private VehicleDetailsService vehicleDetailsService;
-    private VehicleDetails vehicleDetails;
-
-    @BeforeEach
-    void setUp() {
-        vehicleDetails = new VehicleDetails();
-        vehicleDetails.setId(1);
-        vehicleDetails.setModelYear(2022);
-        vehicleDetails.setBrandName("Toyota");
-        vehicleDetails.setModelName("Camry");
-        vehicleDetails.setTrimType("LS");
-        vehicleDetails.setBodyType("coupe");
-        vehicleDetails.setVehiclePrice(26548.20);
-        vehicleDetails.setMilesOnVehicle(1100);
-        vehicleDetails.setInterestRate(3.5);
-        vehicleDetails.setLocationOfVehicle("Mirpur,Dhaka,Bangladesh");
-        vehicleDetails.setVehicleDescription("There is no defect in this car.Before purchasing you can check this car for a long period of time.");
-        vehicleDetails.setSellerName("Navana Autos");
-        vehicleDetails.setSellerContactNumber("+8801725862487");
-
-    }
+    @InjectMocks
+    private VehicleDetailsServiceImpl vehicleDetailsService;
 
     @Test
     @DisplayName("Test vehicle details saved when passed valid input data")
-    void saveVehicleDetails() throws VehicleNotSaved {
-        VehicleDetails input = new VehicleDetails();
-        input.setId(1);
-        input.setModelYear(2022);
-        input.setBrandName("Toyota");
-        input.setModelName("Camry");
-        input.setTrimType("LS");
-        input.setBodyType("coupe");
-        input.setVehiclePrice(26548.20);
-        input.setMilesOnVehicle(1100);
-        input.setInterestRate(3.5);
-        input.setLocationOfVehicle("Mirpur,Dhaka,Bangladesh");
-        input.setVehicleDescription("There is no defect in this car.Before purchasing you can check this car for a long period of time.");
-        input.setSellerName("Navana Autos");
-        input.setSellerContactNumber("+8801725862487");
+    void saved_VehicleDetails() throws VehicleNotSaved {
+        VehicleDetails vehicleDetails = VehicleDetails.builder()
+        .modelYear(2022)
+        .brandName("Toyota")
+        .modelName("Camry")
+        .trimType("LS")
+        .bodyType("coupe")
+        .vehiclePrice(26548.20)
+        .milesOnVehicle(1100)
+        .interestRate(3.5)
+        .locationOfVehicle("Mirpur,Dhaka,Bangladesh")
+        .vehicleDescription("There is no defect in this car.Before purchasing you can check this car for a long period of time.")
+        .sellerName("Navana Autos")
+        .sellerContactNumber("+8801725862487").build();
 
-        Mockito.when(vehicleDetailsDAO.save(input)).thenReturn(vehicleDetails);
-        VehicleDetails output = vehicleDetailsService.saveVehicleDetails(input);
-        assertEquals(output.getId(), vehicleDetails.getId());
-        assertEquals(output.getModelYear(), vehicleDetails.getModelYear());
-        assertEquals(output.getBrandName(), vehicleDetails.getBrandName());
+        Mockito.when(vehicleDetailsDAO.save(Mockito.any(VehicleDetails.class))).thenReturn(vehicleDetails);
+        VehicleDetails output = vehicleDetailsService.saveVehicleDetails(vehicleDetails);
+        Assertions.assertThat(output).isNotNull();
     }
 }

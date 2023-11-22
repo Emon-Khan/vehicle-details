@@ -1,7 +1,6 @@
 package com.shikbeTumio.vehicledetails.api.vehicledetails.config;
 
 import org.assertj.core.util.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "com.shikbeTumio.vehicledetails.api.vehicledetails.dao")
+@EnableJpaRepositories(basePackages = {"com.shikbeTumio.vehicledetails.api.vehicledetails.dao"})
 @PropertySource({"classpath:application.properties"})
 @ComponentScan({ "com.shikbeTumio.vehicledetails.api.vehicledetails" })
 public class VehicleDetailsJPAConfig {
