@@ -19,15 +19,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = VehicleDetailsController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -72,8 +71,18 @@ public class VehicleDetailsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.brandName", CoreMatchers.is(vehicleDetails.getBrandName())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.modelName", CoreMatchers.is(vehicleDetails.getModelName())));
     }
-    /*@Test
-    public void fetchAllVehicleDetails_ReturnOK() throws VehicleDetailsNotFound {
-        given(vehicleDetailsService.fetchAllVehicleDetails()).willAnswer();
-    }*/
+
+    @Test
+    public void fetchAllVehicleDetails_ReturnOK() throws VehicleDetailsNotFound, Exception {
+        List<VehicleDetails> output = Arrays.asList(
+                new VehicleDetails(1, 2022, "Honda", "Camry", "LS", "", 25468.65, 1500, 5.35, "Albaquerque, New Mexico", "There is no defect in this car.Before purchasing you can check this car for a long period of time.", "DS Auto", "+8801967899852"),
+                new VehicleDetails(2, 2020, "Toyota", "Camry", "LS", "", 25468.65, 1500, 5.35, "Albaquerque, New Mexico", "There is no defect in this car.Before purchasing you can check this car for a long period of time.", "DS Auto", "+8801967899852"),
+                new VehicleDetails(2, 2020, "Toyota", "Camry", "LS", "", 25468.65, 1500, 5.35, "Albaquerque, New Mexico", "There is no defect in this car.Before purchasing you can check this car for a long period of time.", "DS Auto", "+8801967899852"));
+        when(vehicleDetailsService.fetchAllVehicleDetails()).thenReturn(output);
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/vehicle-details")
+                .contentType(MediaType.APPLICATION_JSON));
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].brandName").value("Honda"));
+    }
 }
