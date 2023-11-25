@@ -1,5 +1,6 @@
 package com.shikbeTumio.vehicledetails.api.vehicledetails.controller;
 
+import com.shikbeTumio.vehicledetails.api.vehicledetails.dto.VehicleDetailsDTO;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.entity.VehicleDetails;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.MandatoryFieldMissingException;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.VehicleDetailsNotFound;
@@ -33,7 +34,8 @@ public class VehicleDetailsController {
         return new ResponseEntity<>(saveVehicleInfo, HttpStatus.CREATED);
     }
     @GetMapping
-    public List<VehicleDetails> getAllVehicleDetails() throws VehicleDetailsNotFound {
-        return vehicleDetailsService.fetchAllVehicleDetails();
+    public VehicleDetailsDTO getAllVehicleDetails() throws VehicleDetailsNotFound {
+        List<VehicleDetails> savedVehicle = vehicleDetailsService.fetchAllVehicleDetails();;
+        return new VehicleDetailsDTO(savedVehicle);
     }
 }
