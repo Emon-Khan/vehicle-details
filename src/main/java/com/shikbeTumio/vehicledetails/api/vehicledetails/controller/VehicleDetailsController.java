@@ -2,6 +2,7 @@ package com.shikbeTumio.vehicledetails.api.vehicledetails.controller;
 
 import com.shikbeTumio.vehicledetails.api.vehicledetails.entity.VehicleDetails;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.MandatoryFieldMissingException;
+import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.VehicleDetailsNotFound;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.service.VehicleDetailsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,9 @@ public class VehicleDetailsController {
         }
         VehicleDetails saveVehicleInfo =  vehicleDetailsService.saveVehicleDetails(vehicleDetails);
         return new ResponseEntity<>(saveVehicleInfo, HttpStatus.CREATED);
+    }
+    @GetMapping
+    public List<VehicleDetails> getAllVehicleDetails() throws VehicleDetailsNotFound {
+        return vehicleDetailsService.fetchAllVehicleDetails();
     }
 }
