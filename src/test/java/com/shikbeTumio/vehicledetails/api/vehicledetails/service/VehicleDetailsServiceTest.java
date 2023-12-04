@@ -2,8 +2,10 @@ package com.shikbeTumio.vehicledetails.api.vehicledetails.service;
 
 import com.shikbeTumio.vehicledetails.api.vehicledetails.dao.VehicleDetailsDAO;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.entity.VehicleDetails;
+import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.VehicleDetailsNotFound;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.VehicleNotSaved;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.service.impl.VehicleDetailsServiceImpl;
+import org.assertj.core.api.AssertJProxySetup;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -92,5 +95,13 @@ class VehicleDetailsServiceTest {
         List<VehicleDetails> output = vehicleDetailsDAO.findAll();
         Assertions.assertThat(output).isNotNull();
         Assertions.assertThat(output.size()).isEqualTo(3);
+    }
+    @Test
+    void getVehicle_By_IDTest() throws VehicleDetailsNotFound {
+        VehicleDetails dbVehicleDetails = new VehicleDetails(105, 2020, "Volkswagen", "Arteon", "SE", "Sedan", 64496.759, 1500, 2.16, "Perth, Australia", "The Volkswagen Arteon is a car manufactured by German car manufacturer Volkswagen.Described as a large family car or a mid-size car, it is available in five-door liftback or estate body styles.", "Nexus Motor Ltd", "+880185365127");
+        //vehicleDetailsDAO.save(vehicleDetails);
+        Mockito.when(vehicleDetailsDAO.findById(105)).thenReturn(Optional.of(dbVehicleDetails));
+        VehicleDetails savedVehicleDetails = vehicleDetailsService.getVehicleById(105);
+        Assertions.assertThat(savedVehicleDetails).isNotNull();
     }
 }

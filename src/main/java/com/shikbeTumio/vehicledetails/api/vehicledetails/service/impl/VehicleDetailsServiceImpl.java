@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleDetailsServiceImpl implements VehicleDetailsService {
@@ -29,9 +30,18 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
     @Override
     public List<VehicleDetails> fetchAllVehicleDetails() throws VehicleDetailsNotFound {
         List<VehicleDetails> dbVehicles = vehicleDetailsDao.findAll();
-        if(dbVehicles.size()==0){
+        if (dbVehicles.size() == 0) {
             throw new VehicleDetailsNotFound("No vehicle details found in Database!");
         }
         return dbVehicles;
+    }
+
+    @Override
+    public VehicleDetails getVehicleById(int vehicleId) throws VehicleDetailsNotFound {
+        Optional<VehicleDetails> optionalVehicleDetails = vehicleDetailsDao.findById(vehicleId);
+        if (!optionalVehicleDetails.isPresent()) {
+            throw new VehicleDetailsNotFound("No vehicle details found in database for vehicle ID-"+vehicleId);
+        }
+        return optionalVehicleDetails.get();
     }
 }

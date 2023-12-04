@@ -3,6 +3,7 @@ package com.shikbeTumio.vehicledetails.api.vehicledetails.dao;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.entity.VehicleDetails;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class VehicleDetailsDAOTest {
@@ -18,62 +21,76 @@ public class VehicleDetailsDAOTest {
     @Autowired
     private VehicleDetailsDAO vehicleDetailsDAO;
 
-    @BeforeEach
-    public void init() {
-        vehicleDetails = VehicleDetails.builder()
-                .modelYear(2020)
-                .brandName("Volkswagen")
-                .modelName("Arteon")
-                .trimType("SE")
-                .bodyType("Sedan")
-                .vehiclePrice(64496.759)
-                .milesOnVehicle(1500)
-                .interestRate(2.16)
-                .locationOfVehicle("Perth, Australia")
-                .vehicleDescription("The Volkswagen Arteon is a car manufactured by German car manufacturer Volkswagen.\n" +
-                        "Described as a large family car or a mid-size car, it is available in five-door \n" +
-                        "liftback or estate body styles.")
-                .sellerName("Nexus Motors Ltd")
-                .sellerContactNumber("+880185365127").build();
-    }
-
     @Test
-    public void VehicleDetails_Save_ReturnedSavedVehicleDetails() {
+    void getVehicleDetailsByIDTest() {
         //Arrange
-        //This part has been writen on the @BeforeEach section so that i can use it whenever i want
+        VehicleDetails dbVehicleDetails = new VehicleDetails(105, 2020, "Volkswagen", "Arteon", "SE", "Sedan", 64496.759, 1500, 2.16, "Perth, Australia", "The Volkswagen Arteon is a car manufactured by German car manufacturer Volkswagen.Described as a large family car or a mid-size car, it is available in five-door liftback or estate body styles.", "Nexus Motor Ltd", "+880185365127");
+        vehicleDetailsDAO.save(dbVehicleDetails);
         //Act
-        VehicleDetails savedVehicleDetails = vehicleDetailsDAO.save(vehicleDetails);
-
+        VehicleDetails findVehicleDetailsUsingID = vehicleDetailsDAO.findById(dbVehicleDetails.getId()).get();
+        //VehicleDetails findVehicleDetailsUsingID = optionalVehicleDetailsUsingID.get();
         //Assert
-        Assertions.assertThat(savedVehicleDetails).isNotNull();
-        Assertions.assertThat(savedVehicleDetails.getId()).isGreaterThan(0);
+        assertThat(findVehicleDetailsUsingID).isNotNull();
     }
 
-    @Test
-    public void getAllVehicleDetails() {
-        //Arrange
-        VehicleDetails vehicleDetails2 = VehicleDetails.builder()
-                .modelYear(2022)
-                .brandName("Toyota")
-                .modelName("Camry")
-                .trimType("LS")
-                .bodyType("")
-                .vehiclePrice(25468.65)
-                .milesOnVehicle(1500)
-                .interestRate(5.35)
-                .locationOfVehicle("Albuquerque, New Mexico")
-                .vehicleDescription("There is no defect in this car.Before purchasing you can check this car for a long period of time.")
-                .sellerName("DS Auto")
-                .sellerContactNumber("+8801967899852").build();
+    @Nested
+    private class useBeforeEach {
+        @BeforeEach
+        public void init() {
+            vehicleDetails = VehicleDetails.builder()
+                    .modelYear(2020)
+                    .brandName("Volkswagen")
+                    .modelName("Arteon")
+                    .trimType("SE")
+                    .bodyType("Sedan")
+                    .vehiclePrice(64496.759)
+                    .milesOnVehicle(1500)
+                    .interestRate(2.16)
+                    .locationOfVehicle("Perth, Australia")
+                    .vehicleDescription("The Volkswagen Arteon is a car manufactured by German car manufacturer Volkswagen.\n" +
+                            "Described as a large family car or a mid-size car, it is available in five-door \n" +
+                            "liftback or estate body styles.")
+                    .sellerName("Nexus Motors Ltd")
+                    .sellerContactNumber("+880185365127").build();
+        }
+
+        @Test
+        public void VehicleDetails_Save_ReturnedSavedVehicleDetails() {
+            //Arrange
+            //This part has been writen on the @BeforeEach section so that i can use it whenever i want
+            //Act
+            VehicleDetails savedVehicleDetails = vehicleDetailsDAO.save(vehicleDetails);
+
+            //Assert
+            Assertions.assertThat(savedVehicleDetails).isNotNull();
+            Assertions.assertThat(savedVehicleDetails.getId()).isGreaterThan(0);
+        }
+
+        @Test
+        public void getAllVehicleDetails() {
+            //Arrange
+            VehicleDetails vehicleDetails2 = VehicleDetails.builder()
+                    .modelYear(2022)
+                    .brandName("Toyota")
+                    .modelName("Camry")
+                    .trimType("LS")
+                    .bodyType("")
+                    .vehiclePrice(25468.65)
+                    .milesOnVehicle(1500)
+                    .interestRate(5.35)
+                    .locationOfVehicle("Albuquerque, New Mexico")
+                    .vehicleDescription("There is no defect in this car.Before purchasing you can check this car for a long period of time.")
+                    .sellerName("DS Auto")
+                    .sellerContactNumber("+8801967899852").build();
 
 
-        vehicleDetailsDAO.save(vehicleDetails);
-        vehicleDetailsDAO.save(vehicleDetails2);
-        //Act
-        List<VehicleDetails> getVehicleDetails = vehicleDetailsDAO.findAll();
-        //Assert
-        Assertions.assertThat(getVehicleDetails).isNotNull();
-        Assertions.assertThat(getVehicleDetails.size()).isEqualTo(2);
+            vehicleDetailsDAO.save(vehicleDetails);
+            vehicleDetailsDAO.save(vehicleDetails2);
+            //Act
+            List<VehicleDetails> getVehicleDetails = vehicleDetailsDAO.findAll();
+            //Assert
+            Assertions.assertThat(getVehicleDetails).isNotNull();
+            Assertions.assertThat(getVehicleDetails.size()).isEqualTo(2);
+        }
     }
-
 }
