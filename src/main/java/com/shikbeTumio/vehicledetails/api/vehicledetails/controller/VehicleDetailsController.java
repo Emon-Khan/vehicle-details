@@ -42,4 +42,9 @@ public class VehicleDetailsController {
     public VehicleDetails getVehicleDetailsById(@PathVariable int vehicleId) throws VehicleDetailsNotFound {
          return vehicleDetailsService.getVehicleById(vehicleId);
     }
+    @DeleteMapping("/{vehicleId}")
+    public ResponseEntity<String> deleteVehicleDetailsById(@PathVariable int vehicleId) throws VehicleDetailsNotFound {
+        vehicleDetailsService.deleteVehicleDetailsById(vehicleId);
+        return new ResponseEntity<>("Delete vehicle details from DB with ID- "+vehicleId, HttpStatus.OK);
+    }
 }

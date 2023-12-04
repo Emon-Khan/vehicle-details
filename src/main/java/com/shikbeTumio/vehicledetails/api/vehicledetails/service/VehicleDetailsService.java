@@ -10,4 +10,5 @@ public interface VehicleDetailsService {
     VehicleDetails saveVehicleDetails(VehicleDetails vehicleDetails) throws VehicleNotSaved;
     List<VehicleDetails> fetchAllVehicleDetails() throws VehicleDetailsNotFound;
     VehicleDetails getVehicleById(int vehicleId) throws VehicleDetailsNotFound;
+    void deleteVehicleDetailsById(int vehicleId) throws VehicleDetailsNotFound;
 }
