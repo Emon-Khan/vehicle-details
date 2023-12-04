@@ -6,11 +6,11 @@ import com.shikbeTumio.vehicledetails.api.vehicledetails.entity.VehicleDetails;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.exception.VehicleDetailsNotFound;
 import com.shikbeTumio.vehicledetails.api.vehicledetails.service.VehicleDetailsService;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +27,8 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = VehicleDetailsController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -67,22 +69,41 @@ public class VehicleDetailsControllerTest {
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/vehicle-details")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(vehicleDetails)));
-        response.andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.brandName", CoreMatchers.is(vehicleDetails.getBrandName())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.modelName", CoreMatchers.is(vehicleDetails.getModelName())));
+        response.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.brandName", CoreMatchers.is(vehicleDetails.getBrandName())))
+                .andExpect(jsonPath("$.modelName", CoreMatchers.is(vehicleDetails.getModelName())));
     }
 
     @Test
     public void fetchAllVehicleDetails_ReturnOK() throws VehicleDetailsNotFound, Exception {
-        List<VehicleDetails> output = Arrays.asList(
-                new VehicleDetails(1, 2022, "Honda", "Camry", "LS", "", 25468.65, 1500, 5.35, "Albaquerque, New Mexico", "There is no defect in this car.Before purchasing you can check this car for a long period of time.", "DS Auto", "+8801967899852"),
-                new VehicleDetails(2, 2020, "Toyota", "Camry", "LS", "", 25468.65, 1500, 5.35, "Albaquerque, New Mexico", "There is no defect in this car.Before purchasing you can check this car for a long period of time.", "DS Auto", "+8801967899852"),
-                new VehicleDetails(2, 2020, "Toyota", "Camry", "LS", "", 25468.65, 1500, 5.35, "Albaquerque, New Mexico", "There is no defect in this car.Before purchasing you can check this car for a long period of time.", "DS Auto", "+8801967899852"));
+        VehicleDetails vehicleDetails1 = new VehicleDetails(1, 2020, "Volvo", "Arteon", "SE", "Sedan", 64496.759, 1500, 2.16, "Perth, Australia", "The Volkswagen Arteon is a car manufactured by German car manufacturer Volkswagen.\n" +
+                "Described as a large family car or a mid-size car, it is available in five-door \n" +
+                "liftback or estate body styles.", "Nexus Motors Ltd", "+880185365127");
+        VehicleDetails vehicleDetails2 = new VehicleDetails(2, 2020, "Honda", "Arteon", "SE", "Sedan", 64496.759, 1500, 2.16, "Perth, Australia", "The Volkswagen Arteon is a car manufactured by German car manufacturer Volkswagen.\n" +
+                "Described as a large family car or a mid-size car, it is available in five-door \n" +
+                "liftback or estate body styles.", "Nexus Motors Ltd", "+880185365127");
+        List<VehicleDetails> output = Arrays.asList(vehicleDetails1, vehicleDetails2);
         when(vehicleDetailsService.fetchAllVehicleDetails()).thenReturn(output);
-        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/vehicle-details")
+        ResultActions response = mockMvc.perform(get("/api/v1/vehicle-details")
                 .contentType(MediaType.APPLICATION_JSON));
-        response.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(3))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].brandName").value("Honda"));
+        response.andExpect(status().is(200))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.vehicleDetailsList.size()", Matchers.is(2)))
+                .andExpect(jsonPath("$.vehicleDetailsList[0].id", Matchers.is(1)))
+                .andExpect(jsonPath("$.vehicleDetailsList[0].brandName", Matchers.is("Volvo")))
+                .andExpect(jsonPath("$.vehicleDetailsList[1].brandName", Matchers.is("Honda")))
+                .andExpect(jsonPath("$.vehicleDetailsList[1].id", Matchers.is(2)));
+    }
+
+    @Test
+    public void Get_VehicleDetails_ByID() throws VehicleDetailsNotFound, Exception {
+        int vehicleId = 1;
+        when(vehicleDetailsService.getVehicleById(vehicleId)).thenReturn(vehicleDetails);
+        mockMvc.perform(get("/api/v1/vehicle-details/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(vehicleDetails)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.brandName", CoreMatchers.is(vehicleDetails.getBrandName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.modelName", CoreMatchers.is(vehicleDetails.getModelName())));
     }
 }
