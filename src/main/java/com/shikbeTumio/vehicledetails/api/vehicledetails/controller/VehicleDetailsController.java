@@ -20,31 +20,42 @@ import java.util.List;
 public class VehicleDetailsController {
     @Autowired
     VehicleDetailsService vehicleDetailsService;
+
     @PostMapping
-    public ResponseEntity<VehicleDetails>saveVehicle(@Valid @RequestBody VehicleDetails vehicleDetails, BindingResult result) throws Exception {
-        if(result.hasErrors()){
+    public ResponseEntity<VehicleDetails> saveVehicle(@Valid @RequestBody VehicleDetails vehicleDetails, BindingResult result) throws Exception {
+        if (result.hasErrors()) {
             List<ObjectError> errorList = result.getAllErrors();
             String allErrors = "";
-            for(ObjectError err: errorList){
-                allErrors+=err.getDefaultMessage()+",";
+            for (ObjectError err : errorList) {
+                allErrors += err.getDefaultMessage() + ",";
             }
             throw new MandatoryFieldMissingException(allErrors);
         }
-        VehicleDetails saveVehicleInfo =  vehicleDetailsService.saveVehicleDetails(vehicleDetails);
+        VehicleDetails saveVehicleInfo = vehicleDetailsService.saveVehicleDetails(vehicleDetails);
         return new ResponseEntity<>(saveVehicleInfo, HttpStatus.CREATED);
     }
+
     @GetMapping
     public VehicleDetailsDTO getAllVehicleDetails() throws VehicleDetailsNotFound {
-        List<VehicleDetails> savedVehicle = vehicleDetailsService.fetchAllVehicleDetails();;
+        List<VehicleDetails> savedVehicle = vehicleDetailsService.fetchAllVehicleDetails();
+        ;
         return new VehicleDetailsDTO(savedVehicle);
     }
+
     @GetMapping("/{vehicleId}")
     public VehicleDetails getVehicleDetailsById(@PathVariable int vehicleId) throws VehicleDetailsNotFound {
-         return vehicleDetailsService.getVehicleById(vehicleId);
+        return vehicleDetailsService.getVehicleById(vehicleId);
     }
+
     @DeleteMapping("/{vehicleId}")
     public ResponseEntity<String> deleteVehicleDetailsById(@PathVariable int vehicleId) throws VehicleDetailsNotFound {
         vehicleDetailsService.deleteVehicleDetailsById(vehicleId);
-        return new ResponseEntity<>("Delete vehicle details from DB with ID- "+vehicleId, HttpStatus.OK);
+        return new ResponseEntity<>("Delete vehicle details from DB with ID- " + vehicleId, HttpStatus.OK);
+    }
+
+    @PutMapping("/{vehicleId}")
+    public ResponseEntity<VehicleDetails> updateVehicleDetailsUsingId(@PathVariable int vehicleId,@RequestBody VehicleDetails vehicleDetails) throws VehicleDetailsNotFound {
+        VehicleDetails updatedVehicleDetails = vehicleDetailsService.updateVehicleDetails(vehicleId, vehicleDetails);
+        return new ResponseEntity<>(updatedVehicleDetails, HttpStatus.OK);
     }
 }
