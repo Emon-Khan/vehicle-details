@@ -8,7 +8,12 @@ import java.util.List;
 
 public interface VehicleDetailsService {
     VehicleDetails saveVehicleDetails(VehicleDetails vehicleDetails) throws VehicleNotSaved;
+
     List<VehicleDetails> fetchAllVehicleDetails() throws VehicleDetailsNotFound;
+
     VehicleDetails getVehicleById(int vehicleId) throws VehicleDetailsNotFound;
+
     void deleteVehicleDetailsById(int vehicleId) throws VehicleDetailsNotFound;
+
+    VehicleDetails updateVehicleDetails(int vehicleId, VehicleDetails vehicleDetails) throws VehicleDetailsNotFound;
 }
