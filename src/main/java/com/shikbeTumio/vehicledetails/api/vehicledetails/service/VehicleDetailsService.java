@@ -16,5 +16,5 @@ public interface VehicleDetailsService {
     void deleteVehicleDetailsById(int vehicleId) throws VehicleDetailsNotFound;
 
     VehicleDetails updateVehicleDetails(int vehicleId, VehicleDetails vehicleDetails) throws VehicleDetailsNotFound;
-    List<VehicleDetails> fetchFilteredVehicleDetails(int modelYear, String brand, String model, String trim, double price);
+    List<VehicleDetails> fetchFilteredVehicleDetails(int modelYear, String brand, String model, String trim, double price) throws VehicleDetailsNotFound;
 }

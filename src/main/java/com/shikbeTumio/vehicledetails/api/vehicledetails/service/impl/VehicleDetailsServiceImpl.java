@@ -95,15 +95,25 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
     }
 
     @Override
-    public List<VehicleDetails> fetchFilteredVehicleDetails(int modelYear, String brand, String model, String trim, double price) {
+    public List<VehicleDetails> fetchFilteredVehicleDetails(int modelYear, String brand, String model, String trim, double price) throws VehicleDetailsNotFound {
         List<VehicleDetails> vehicleDetailsList = null;
         if (modelYear > 1900 && brand != "" && model != "" && trim != "" && price > 0.0) {
             vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria(modelYear, brand, model, trim, price);
+        } else if (modelYear > 1900 && brand != "" && model != "" && trim != "") {
+            vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria5(modelYear, brand, model, trim);
+        } else if (modelYear > 1900 && brand != "" && model != "" && price > 0.0) {
+            vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria6(modelYear, brand, model, price);
+        } else if (modelYear > 1900 && brand != "" && price > 0.0) {
+            vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria7(modelYear, brand, price);
+        } else if (modelYear > 1900 && price > 0.0) {
+            vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria8(modelYear, price);
+        } else if (modelYear > 1900) {
+            vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria9(modelYear);
         } else if (brand != "" && model != "" && trim != "" && price > 0.0) {
             vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria(brand, model, trim, price);
         } else if (brand != "" && model != "" && trim != "") {
             vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria1(brand, model, trim);
-        }else if (brand != "" && model != "" && price > 0.0) {
+        } else if (brand != "" && model != "" && price > 0.0) {
             vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria2(brand, model, price);
         } else if (brand != "" && price > 0.0) {
             vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria2(brand, price);
@@ -111,6 +121,8 @@ public class VehicleDetailsServiceImpl implements VehicleDetailsService {
             vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria3(brand);
         } else if (price > 0.0) {
             vehicleDetailsList = vehicleDetailsDao.filterVehicleBasedOnCriteria4(price);
+        } else {
+            vehicleDetailsList = fetchAllVehicleDetails();
         }
         return vehicleDetailsList;
     }
