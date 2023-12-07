@@ -38,7 +38,6 @@ public class VehicleDetailsController {
     @GetMapping
     public VehicleDetailsDTO getAllVehicleDetails() throws VehicleDetailsNotFound {
         List<VehicleDetails> savedVehicle = vehicleDetailsService.fetchAllVehicleDetails();
-        ;
         return new VehicleDetailsDTO(savedVehicle);
     }
 
@@ -54,8 +53,20 @@ public class VehicleDetailsController {
     }
 
     @PutMapping("/{vehicleId}")
-    public ResponseEntity<VehicleDetails> updateVehicleDetailsUsingId(@PathVariable int vehicleId,@RequestBody VehicleDetails vehicleDetails) throws VehicleDetailsNotFound {
+    public ResponseEntity<VehicleDetails> updateVehicleDetailsUsingId(@PathVariable int vehicleId, @RequestBody VehicleDetails vehicleDetails) throws VehicleDetailsNotFound {
         VehicleDetails updatedVehicleDetails = vehicleDetailsService.updateVehicleDetails(vehicleId, vehicleDetails);
         return new ResponseEntity<>(updatedVehicleDetails, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public VehicleDetailsDTO getVehicleDetailsByCriteria(@RequestParam String modelYear, @RequestParam String brand, @RequestParam String model, @RequestParam String trim, @RequestParam String price) {
+        if(price =="" || price==null){
+            price="0.0";
+        }
+        if(modelYear==""||modelYear==null){
+            modelYear="0";
+        }
+        List<VehicleDetails> filteredVehicles = vehicleDetailsService.fetchFilteredVehicleDetails(Integer.parseInt(modelYear), brand, model, trim, Double.parseDouble(price));
+        return new VehicleDetailsDTO(filteredVehicles);
     }
 }
