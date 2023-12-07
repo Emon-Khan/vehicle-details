@@ -59,7 +59,7 @@ public class VehicleDetailsController {
     }
 
     @GetMapping("/search")
-    public VehicleDetailsDTO getVehicleDetailsByCriteria(@RequestParam String modelYear, @RequestParam String brand, @RequestParam String model, @RequestParam String trim, @RequestParam String price) {
+    public VehicleDetailsDTO getVehicleDetailsByCriteria(@RequestParam String modelYear, @RequestParam String brand, @RequestParam String model, @RequestParam String trim, @RequestParam String price) throws VehicleDetailsNotFound {
         if(price =="" || price==null){
             price="0.0";
         }
